@@ -72,6 +72,27 @@ const locations = [
         "button text": ["Attack","Dodge","Run"],
         "button functions": [attack, dodge, goTown],
         text: "You are fighting a \"Monster\"..."
+    },
+
+    {
+        name: "kill monster",
+        "button text": ["Go to town square","Go to town square","Go to town square"],
+        "button functions": [goTown,goTown,goTown],
+        text: "The Monster screams 'Arg!' as it dies. You gain exp. points and gain gold..."
+    },
+
+    {
+        name: "lose",
+        "button text": ["REPLAY?","REPLAY?","REPLAY?"],
+        "button functions": [restart,restart,restart],
+        text: "You die!... Try Again...."
+    },
+
+    {
+        name: "win",
+        "button text": ["REPLAY?","REPLAY?","REPLAY?"],
+        "button functions": [restart,restart,restart],
+        text: "You Defeted the Dragon! You WIN the Game!..." 
     }
 ];
 
@@ -94,6 +115,7 @@ button3.onclick = fightDragon;
 
 //function to update buttons and text
 function update(location) {
+    monsterStats.style.display = "none";
     button1.innerText = location["button text"][0];
     button2.innerText = location["button text"][1];
     button3.innerText = location["button text"][2];
@@ -126,7 +148,7 @@ function goCave() {
 function buyHealth() {
     console.log("Buying Health");
     if ( gold >=10 ) {
-        if ( health<=190 ){
+        if ( health<=90 ){
             console.log("Healing");
             gold -= 10;
             health += 10;
@@ -205,6 +227,7 @@ function fightDragon() {
 
 //function for goFight
 function goFight() {
+    console.log("In the battlefield...");
     update(locations[3]);
     monsterHealth = monsters[fighting].health;
     monsterStats.style.display = "block";
@@ -226,7 +249,10 @@ function attack() {
     } else if ( monsterHealth <=0 ) {
         healthText.innerText = health;
         monsterHealthText.innerText = 0;
-        defeatMonster();
+        fighting == 2? winGame() : defeatMonster();
+    } else {
+        healthText.innerText = health;
+        monsterHealthText.innerText = monsterHealth;
     }
 }
 
@@ -249,5 +275,25 @@ function defeatMonster() {
 
 //function for lose
 function lose() {
+    console.log("You Lose! Game Over...");
+    update(locations[5]);
+}
 
+//finction for winGame
+function winGame() {
+    console.log("You Win! Game Over...");
+    update(locations[6])
+}
+
+//function for restart
+function restart() {
+    xp = 0;
+    health = 100;
+    gold = 50;
+    currentWeapon = 0;
+    inventory = ["stick"]
+    goldText.innerText = gold;
+    healthText.innerText = health;
+    xpText.innerText = xp;
+    goTown();
 }
