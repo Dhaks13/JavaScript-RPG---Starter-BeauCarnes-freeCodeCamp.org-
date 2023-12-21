@@ -24,7 +24,25 @@ const weapon = [
         name: "sword",
         power: 100
     }
-]
+];
+
+const monsters = [
+    {
+        name: "slime",
+        level: 2,
+        health: 15
+    },
+    {
+        name: "fanged beast",
+        level: 8,
+        health: 60
+    },
+    {
+        name: "dragon",
+        level: 20,
+        health: 300
+    }
+];
 
 const locations = [
     
@@ -47,8 +65,15 @@ const locations = [
         "button text": ["Fight slime","Fight fanged beast","Go to town square"],
         "button functions": [fightSlime,fightBeast,goTown],
         text: "You entered the \"Cave\"...\nYou See \"Monsters\"."
+    },
+
+    {
+        name: "fight",
+        "button text": ["Attack","Dodge","Run"],
+        "button functions": [attack, dodge, goTown],
+        text: "You are fighting a \"Monster\"..."
     }
-]
+];
 
 //getting html document elements
 const button1 = document.querySelector("#button1");
@@ -96,10 +121,6 @@ function goCave() {
     update(locations[2])
 }
 
-//function for fightDragon
-function fightDragon() {
-    console.log("Fighting Dragon...");
-}
 
 //function for buyHealth
 function buyHealth() {
@@ -123,25 +144,110 @@ function buyHealth() {
 
 //function for buyWeapon
 function buyWeapon() {
-    console.log("buying Weapon");
-    if (gold >= 30) {
+    console.log("buying a Weapon");
+    if (currentWeapon < weapon.length - 1) {
+        if (gold >= 30) {
             gold -= 30;
             currentWeapon ++;
             goldText.innerText = gold;
             let newWeapon = weapon[currentWeapon].name;
-            text.innerText = "You now have a \"" + newWeapon + "\"...";
             inventory.push(newWeapon);
+            text.innerText = "You now have a \"" + newWeapon + "\"...\nIn your Inventory you have:" + inventory +"...";
+            console.log("Weapon added");
+        }   else {
+            text.innerText = "You Don't Have Enough \"Gold\" To Buy \"Weapon\"...";
+            console.log("buying Weapon Failed");
+        }
+    } else {
+        console.log("Weapon Maxed!");
+        text.innerText = "You already have the most \"Powerful Weapon\"";
+        button2.innerText = "Sell weapon for 15 Gold";
+        button2.onclick = sellWeapon;
     }
+}
 
+//funtion to sellWeapon
+function sellWeapon() {
+    console.log("Selling a Weapon");
+    if (inventory.length > 1) {
+        gold += 15;
+        gold.innerText = gold;
+        let currentWeapon = inventory.shift();
+        text.innerText = "You Sold a \"" + currentWeapon + "\"...";
+        text.innerText += "\nIn Inventory you have: \"" + inventory + "\"...";
+        console.log("Weapon Sold!...");
+    } else {
+        text.innerText = "Don't Sell your only \"Weapon\"";
+        console.log("Selling Weapon Failed");
+    }
 }
 
 //funtion for fightSlime
 function fightSlime() {
     console.log("Fighting Slime...");
+    fighting = 0;
+    goFight();
 }
-
 
 //funtion for fightBeast
 function fightBeast() {
     console.log("Fighting Beast...");
+    fighting = 1;
+    goFight();
+}
+
+//function for fightDragon
+function fightDragon() {
+    console.log("Fighting Dragon...");
+    fighting = 2;
+    goFight();
+}
+
+//function for goFight
+function goFight() {
+    update(locations[3]);
+    monsterHealth = monsters[fighting].health;
+    monsterStats.style.display = "block";
+    monsterNameText.innerText = monsters[fighting].name;
+    monsterHealthText.innerText = monsterHealth;
+}
+
+//function for attack
+function attack() {
+    console.log("Attacking..."+ monsters[fighting].name + ".");
+    text.innerText = "The " + monsters[fighting].name + "attacks...";
+    text.innerText += "\nYou attack it with your " + weapon[currentWeapon].name + "...";
+    health -= monsters[fighting].level;
+    monsterHealth -= weapon[currentWeapon].power + Math.floor ( Math.random() * xp ) + 1;
+    if ( health <=0 ) {
+        healthText.innerText = 0;
+        monsterHealthText.innerText = monsterHealth;
+        lose();
+    } else if ( monsterHealth <=0 ) {
+        healthText.innerText = health;
+        monsterHealthText.innerText = 0;
+        defeatMonster();
+    }
+}
+
+//function for dodge
+function dodge() {
+    console.log("Taking Cover from" +  monsters[fighting].name + ".");
+    text.innerText = "You dodge the attack from the "+ monsters[fighting].name + ".";
+    
+}
+
+//funtion for defeatMonster
+function defeatMonster() {
+    console.log("Defeated Monster:" +  monsters[fighting].name + ".");
+    gold += Math.floor(monsters[fighting].level * 5.5);
+    xp += monsters[fighting].level;
+    goldText.innerText = gold;
+    xpText.innerText = xp;
+    update(locations[4]);
+}
+
+//function for lose
+function lose() {
+
 }
