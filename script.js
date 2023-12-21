@@ -120,8 +120,8 @@ function update(location) {
     button2.innerText = location["button text"][1];
     button3.innerText = location["button text"][2];
     button1.onclick = location["button funtions"][0];
-    button2.onclick = location["button funtions"];
-    button3.onclick = location["button funtions"];
+    button2.onclick = location["button funtions"][1];
+    button3.onclick = location["button funtions"][2];
     text.innerText = location.text;
 }
 
