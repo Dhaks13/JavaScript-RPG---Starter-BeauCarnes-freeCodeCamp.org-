@@ -113,11 +113,11 @@ function buyHealth() {
             healthText.innerText = health;
         } else{
             console.log("Buying Health Failed");
-            text.innerText = "You Have \"Maximum Health\"";
+            text.innerText = "You Have \"Maximum Health\"...";
         }
     } else{
         console.log("Buying Health Failed");
-        text.innerText = "You Don't Have Enough \"Gold\" To Buy \"Health\"";
+        text.innerText = "You Don't Have Enough \"Gold\" To Buy \"Health\"...";
     }
 }
 
@@ -126,7 +126,11 @@ function buyWeapon() {
     console.log("buying Weapon");
     if (gold >= 30) {
             gold -= 30;
-            currentWeapon += 1;
+            currentWeapon ++;
+            goldText.innerText = gold;
+            let newWeapon = weapon[currentWeapon].name;
+            text.innerText = "You now have a \"" + newWeapon + "\"...";
+            inventory.push(newWeapon);
     }
 
 }
