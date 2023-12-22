@@ -10,7 +10,7 @@ let inventory = ["stick"];
 const weapon = [
     {
         name: "stick",
-        power: 5
+        power: 10
     },
     {
         name: "dagger",
@@ -29,13 +29,13 @@ const weapon = [
 const monsters = [
     {
         name: "slime",
-        level: 2,
-        health: 15
+        level: 5,
+        health: 30
     },
     {
         name: "fanged beast",
-        level: 8,
-        health: 60
+        level: 10,
+        health: 80
     },
     {
         name: "dragon",
@@ -105,8 +105,8 @@ const xpText = document.querySelector("#xpText");
 const healthText = document.querySelector("#healthText");
 const goldText = document.querySelector("#goldText");
 const monsterStats = document.querySelector("#monsterStats");
-const monsterNameText = document.querySelector("#monsterNameText");
-const monsterHealthText = document.querySelector("#monsterHealthText");
+const monsterNameText = document.querySelector("#monsterName");
+const monsterHealthText = document.querySelector("#monsterHealth");
 
 //initialize buttons
 button1.onclick = goStore;
@@ -119,9 +119,9 @@ function update(location) {
     button1.innerText = location["button text"][0];
     button2.innerText = location["button text"][1];
     button3.innerText = location["button text"][2];
-    button1.onclick = location["button funtions"][0];
-    button2.onclick = location["button funtions"][1];
-    button3.onclick = location["button funtions"][2];
+    button1.onclick = location["button functions"][0];
+    button2.onclick = location["button functions"][1];
+    button3.onclick = location["button functions"][2];
     text.innerText = location.text;
 }
 
@@ -230,9 +230,9 @@ function goFight() {
     console.log("In the battlefield...");
     update(locations[3]);
     monsterHealth = monsters[fighting].health;
-    monsterStats.style.display = "block";
     monsterNameText.innerText = monsters[fighting].name;
     monsterHealthText.innerText = monsterHealth;
+    monsterStats.style.display = "block";
 }
 
 //function for attack
@@ -240,7 +240,12 @@ function attack() {
     console.log("Attacking..."+ monsters[fighting].name + ".");
     text.innerText = "The " + monsters[fighting].name + "attacks...";
     text.innerText += "\nYou attack it with your " + weapon[currentWeapon].name + "...";
-    health -= monsters[fighting].level;
+    if (isMonsterHit()) {
+        health -= getMonsterAttackValue(monsters[fighting].level);
+    }   else {
+
+    }
+
     monsterHealth -= weapon[currentWeapon].power + Math.floor ( Math.random() * xp ) + 1;
     if ( health <=0 ) {
         healthText.innerText = 0;
@@ -254,6 +259,18 @@ function attack() {
         healthText.innerText = health;
         monsterHealthText.innerText = monsterHealth;
     }
+}
+
+//funtion getMonsterAttackValue
+function getMonsterAttackValue(level) {
+    let hit = (level * 5) - (Math.floor(Math.random() * xp));
+    console.log(hit + " --> Monster hit value");
+    return hit;
+}
+
+//funtion for isMonsterHit
+function isMonsterHit() {
+    return Math.random() <= .2;
 }
 
 //function for dodge
