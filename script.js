@@ -243,7 +243,7 @@ function attack() {
     if (isMonsterHit()) {
         health -= getMonsterAttackValue(monsters[fighting].level);
     }   else {
-
+        text.innerText = "You Dodged The attack..."
     }
 
     monsterHealth -= weapon[currentWeapon].power + Math.floor ( Math.random() * xp ) + 1;
@@ -258,6 +258,11 @@ function attack() {
     } else {
         healthText.innerText = health;
         monsterHealthText.innerText = monsterHealth;
+    }
+    
+    if (Math.random() <= .1 && inventory.length != 1) {
+        text.innerText += "\nYour " + inventory.pop() + "Breaks...";
+        currentWeapon--;
     }
 }
 
