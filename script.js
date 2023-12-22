@@ -77,7 +77,7 @@ const locations = [
     {
         name: "kill monster",
         "button text": ["Go to town square","Go to town square","Go to town square"],
-        "button functions": [goTown,goTown,goTown],
+        "button functions": [goTown,goTown,easterEgg],
         text: "The Monster screams 'Arg!' as it dies. You gain exp. points and gain gold..."
     },
 
@@ -93,6 +93,13 @@ const locations = [
         "button text": ["REPLAY?","REPLAY?","REPLAY?"],
         "button functions": [restart,restart,restart],
         text: "You Defeted the Dragon! You WIN the Game!..." 
+    },
+
+    {
+        name: "easter egg",
+        "button text": ["2","8","Go to Town Square"],
+        "button functions": [pick2,pick8,goTown],
+        text: "You find a secret game. Pick a number above. A random num between 0 and 10 is generated if it matches your selection, You WIN 20 Gold!... else loose 10HP"
     }
 ];
 
@@ -148,10 +155,13 @@ function goCave() {
 function buyHealth() {
     console.log("Buying Health");
     if ( gold >=10 ) {
-        if ( health<=90 ){
+        if ( health < 100 ){
             console.log("Healing");
             gold -= 10;
             health += 10;
+            if (health > 100){
+                health = 100;
+            }
             goldText.innerText = gold;
             healthText.innerText = health;
         } else{
@@ -268,14 +278,14 @@ function attack() {
 
 //funtion getMonsterAttackValue
 function getMonsterAttackValue(level) {
-    let hit = (level * 5) - (Math.floor(Math.random() * xp));
+    let hit = Math.floor((level * 2.5) - (Math.floor(Math.random() * xp)));
     console.log(hit + " --> Monster hit value");
     return hit;
 }
 
 //funtion for isMonsterHit
 function isMonsterHit() {
-    return Math.random() <= .2;
+    return Math.random() <= 0.1;
 }
 
 //function for dodge
@@ -323,4 +333,43 @@ function restart() {
 //funtionn for easterEgg
 function easterEgg() {
     update(locations[7]);
+}
+
+//function if 2 choosen
+function pick2() {
+    pick(2);
+}
+
+//function if 8 choosen
+function pick8() {
+    pick(8);
+}
+
+//function for pick
+function pick(guess) {
+    let numbers = []
+    
+    while ( numbers.length < 10 ) {
+        numbers.push(Math.floor(Math.random()*11))
+    }
+    text.innerText = "You picked  " + guess + ", Here are the random numbers:\n"
+    
+    for (var i =0; i < 10; i++ ){
+        text.innerText += numbers[i] + "\n";
+    }
+
+    if(numbers.indexOf(guess) != -1 ) {
+        text.innerText += "Right! You win 20 gold!";
+        gold += 20;
+        goldText.innerText = gold;
+    } else {
+        text.innerText += "OOps! You loose 10 Health!";
+        health -= 10;
+        if(health <= 0) {
+            healthText.innerText = health;
+            lose();
+        } else{
+            healthText.innerText = health;
+        }
+    }
 }
